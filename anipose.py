@@ -165,6 +165,26 @@ def triangulate(config):
     click.echo('Triangulating points...')
     triangulate_all(config)
 
+@cli.command()
+@pass_config
+def filter_multi(config):
+    from .filter_pose_multi import filter_pose_all
+    click.echo('Filtering tracked points...')
+    filter_pose_all(config)
+
+@cli.command()
+@pass_config
+def filter_3d_multi(config):
+    from .filter_3d_multi import filter_pose_3d_all
+    click.echo('Filtering tracked points...')
+    filter_pose_3d_all(config)
+
+@cli.command()
+@pass_config
+def triangulate_multi(config):
+    from .triangulate_multi import triangulate_all
+    click.echo('Triangulating points...')
+    triangulate_all(config)
 
 @cli.command()
 @pass_config
@@ -260,6 +280,20 @@ def label_2d_filter(config):
 
 @cli.command()
 @pass_config
+def label_2d_multi(config):
+    from .label_videos_multi import label_videos_all
+    click.echo('Labeling videos in 2D...')
+    label_videos_all(config)
+
+@cli.command()
+@pass_config
+def label_2d_filter_multi(config):
+    from .label_videos_multi import label_videos_filtered_all
+    click.echo('Labeling videos in 2D...')
+    label_videos_filtered_all(config)
+
+@cli.command()
+@pass_config
 def label_3d(config):
     from .label_videos_3d import label_videos_3d_all
     click.echo('Labeling videos in 3D...')
@@ -274,8 +308,29 @@ def label_3d_filter(config):
 
 @cli.command()
 @pass_config
+def label_3d_multi(config):
+    from .label_videos_3d_multi import label_videos_3d_all
+    click.echo('Labeling videos in 3D...')
+    label_videos_3d_all(config)
+
+@cli.command()
+@pass_config
+def label_3d_filter_multi(config):
+    from .label_videos_3d_multi import label_videos_3d_filtered_all
+    click.echo('Labeling videos in 3D...')
+    label_videos_3d_filtered_all(config)
+
+@cli.command()
+@pass_config
 def label_combined(config):
     from .label_combined import label_combined_all
+    click.echo('Labeling combined videos...')
+    label_combined_all(config)
+
+@cli.command()
+@pass_config
+def label_combined_multi(config):
+    from .label_combined_multi import label_combined_all
     click.echo('Labeling combined videos...')
     label_combined_all(config)
 
@@ -327,6 +382,36 @@ def run_data(config):
 
     if config['filter3d']['enabled']:
         from .filter_3d import filter_pose_3d_all
+        click.echo('Filtering 3D points...')
+        filter_pose_3d_all(config)
+    
+    click.echo('Computing angles...')
+    compute_angles_all(config)
+
+@cli.command()
+@pass_config
+def run_data_multi(config):
+    from .calibrate import calibrate_all
+    from .pose_videos import pose_videos_all
+    from .triangulate_multi import triangulate_all
+    from .compute_angles import compute_angles_all
+
+    click.echo('Analyzing videos...')
+    pose_videos_all(config)
+
+    if config['filter']['enabled']:
+        from .filter_pose_multi import filter_pose_all
+        click.echo('Filtering tracked points...')
+        filter_pose_all(config)
+
+    click.echo('Calibrating...')
+    calibrate_all(config)
+
+    click.echo('Triangulating points...')
+    triangulate_all(config)
+
+    if config['filter3d']['enabled']:
+        from .filter_3d_multi import filter_pose_3d_all
         click.echo('Filtering 3D points...')
         filter_pose_3d_all(config)
     
@@ -393,6 +478,52 @@ def run_all(config):
     from .label_videos import label_videos_filtered_all, label_videos_all
     from .label_videos_3d import label_videos_3d_all
     from .label_combined import label_combined_all
+
+    click.echo('Labeling videos in 2D...')
+    if config['filter']['enabled']:
+        label_videos_filtered_all(config)
+    else:
+        label_videos_all(config)
+
+    click.echo('Labeling videos in 3D...')
+    label_videos_3d_all(config)
+
+    click.echo('Labeling combined videos...')
+    label_combined_all(config)
+
+@cli.command()
+@pass_config
+def run_all_multi(config):
+    from .calibrate import calibrate_all
+    from .pose_videos import pose_videos_all
+    from .triangulate_multi import triangulate_all
+    from .compute_angles import compute_angles_all
+
+    click.echo('Analyzing videos...')
+    pose_videos_all(config)
+
+    if config['filter']['enabled']:
+        from .filter_pose_multi import filter_pose_all
+        click.echo('Filtering tracked points...')
+        filter_pose_all(config)
+
+    click.echo('Calibrating...')
+    calibrate_all(config)
+
+    click.echo('Triangulating points...')
+    triangulate_all(config)
+
+    if config['filter3d']['enabled']:
+        from .filter_3d_multi import filter_pose_3d_all
+        click.echo('Filtering 3D points...')
+        filter_pose_3d_all(config)
+
+    click.echo('Computing angles...')
+    compute_angles_all(config)
+
+    from .label_videos_multi import label_videos_filtered_all, label_videos_all
+    from .label_videos_3d_multi import label_videos_3d_all
+    from .label_combined_multi import label_combined_all
 
     click.echo('Labeling videos in 2D...')
     if config['filter']['enabled']:
